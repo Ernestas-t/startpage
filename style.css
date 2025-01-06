@@ -19,6 +19,11 @@ html, body {
   align-items: center;
 }
 
+
+.links a.highlight {
+    color: #FA7921  /* Change this to your preferred highlight color */
+}
+
 .container {
   display: grid;
   grid-template-columns: 1fr 460px 600px 1fr;
@@ -111,6 +116,10 @@ a:visited {
 
 a:hover {
   color: var(--color-link-hover);
+}
+
+.links a.highlight {
+    color: #FA7921  /* Change this to your preferred highlight color */
 }
 
 .blinking {

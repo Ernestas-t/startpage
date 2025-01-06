@@ -21,48 +21,128 @@
             </div>
 
             <div class="bookmarks">
-                <div class="category">
+                <div class="category" id="category1">
                     <div class="links">
                         <li class="title">Productivity</li>
-                        <li><a href="https://gmail.com">Gmail</a></li>
-                        <li><a href="https://linkedin.com">Linkedin</a></li>
-                        <li><a href="https://www.notion.so/e6df69e26b494eeabef43bbbe6c164bc?v=b8c580e65f854daab22bf0ced353ab40">Notion</a></li>
-                        <li><a href="https://chatgpt.com/">ChatGPT</a></li>
+                        <li><a id="link4" href="https://chatgpt.com/">ChatGPT</a></li>
+                        <li><a id="link1" href="https://gmail.com">Gmail</a></li>
+                        <li><a id="link2" href="https://linkedin.com">Linkedin</a></li>
+                        <li><a id="link3" href="https://www.notion.so/e6df69e26b494eeabef43bbbe6c164bc?v=b8c580e65f854daab22bf0ced353ab40">Notion</a></li>
                     </div>
                 </div>
 
-                <div class="category">
-                    <div class="links">
-                        <li class="title">Dev</li>
-                        <li><a href="https://github.com/">Github</a></li>
-                        <li><a href="https://gitlab.manodebesis.lt/">Gitlab</a></li>
-                        <li><a href="https://nuolaidauk.manodebesis.lt/">Nuolaidauk Stage</a></li>
-                        <li><a href="https://nuolaidauk.lt/">Nuolaidauk Prod</a></li>
-                    </div>
-                </div>
-
-                <div class="category">
+                <div class="category" id="category3">
                     <div class="links">
                         <li class="title">Social</li>
-                        <li><a href="https://www.facebook.com/">Facebook</a></li>
-                        <li><a href="https://www.facebook.com/messages/t/8672198099569753/">Messenger</a></li>
-                        <li><a href="https://www.instagram.com/">Instagram</a></li>
-                        <li><a href="https://www.reddit.com/">Reddit</a></li>
+                        <li><a id="link10" href="https://www.facebook.com/messages/t/8672198099569753/">Messenger</a></li>
+                        <li><a id="link9" href="https://www.facebook.com/">Facebook</a></li>
+                        <li><a id="link11" href="https://www.instagram.com/">Instagram</a></li>
+                        <li><a id="link12" href="https://www.reddit.com/">Reddit</a></li>
                     </div>
                 </div>
 
-                <div class="category">
+                <div class="category" id="category2">
+                    <div class="links">
+                        <li class="title">Dev</li>
+                        <li><a id="link5" href="https://github.com/">Github</a></li>
+                        <li><a id="link6" href="https://gitlab.manodebesis.lt/">Gitlab</a></li>
+                        <li><a id="link7" href="https://nuolaidauk.manodebesis.lt/">Nuolaidauk Stage</a></li>
+                        <li><a id="link8" href="https://nuolaidauk.lt/">Nuolaidauk Prod</a></li>
+                    </div>
+                </div>
+
+
+                <div class="category" id="category4">
                     <div class="links">
                         <li class="title">Media</li>
-                        <li><a href="http://localhost:32400/web/index.html#!/">Plex</a></li>
-                        <li><a href="https://youtube.com/">Youtube</a></li>
-                        <li><a href="https://twitch.tv/">Twitch</a></li>
-                        <li><a href="https://netflix.com/">Netflix</a></li>
+                        <li><a id="link14" href="https://youtube.com/">Youtube</a></li>
+                        <li><a id="link13" href="http://localhost:32400/web/index.html#!/">Plex</a></li>
+                        <li><a id="link15" href="https://twitch.tv/">Twitch</a></li>
+                        <li><a id="link16" href="https://netflix.com/">Netflix</a></li>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            let currentCategoryIndex = -1;
+            let currentLinkIndex = -1;
+            const categories = document.querySelectorAll('.category');
+
+            function updateHighlight() {
+                document.querySelectorAll('.links a').forEach(link => link.classList.remove('highlight'));
+                if (currentCategoryIndex >= 0 && currentLinkIndex >= 0) {
+                    const currentLinks = categories[currentCategoryIndex].querySelectorAll('.links a');
+                    currentLinkIndex = Math.min(currentLinkIndex, currentLinks.length - 1);
+                    currentLinks[currentLinkIndex].classList.add('highlight');
+                }
+            }
+
+            document.addEventListener('keydown', (event) => {
+                switch (event.key) {
+                    case 'j':
+                        event.preventDefault();
+                        if (currentCategoryIndex === -1) {
+                            currentCategoryIndex = 0;
+                            currentLinkIndex = 0;
+                        } else {
+                            const currentLinks = categories[currentCategoryIndex].querySelectorAll('.links a');
+                            currentLinkIndex = (currentLinkIndex + 1) % currentLinks.length;
+                        }
+                        updateHighlight();
+                        break;
+                    case 'k':
+                        event.preventDefault();
+                        if (currentCategoryIndex === -1) {
+                            currentCategoryIndex = 0;
+                            currentLinkIndex = categories[currentCategoryIndex].querySelectorAll('.links a').length - 1;
+                        } else {
+                            const currentLinks = categories[currentCategoryIndex].querySelectorAll('.links a');
+                            currentLinkIndex = (currentLinkIndex - 1 + currentLinks.length) % currentLinks.length;
+                        }
+                        updateHighlight();
+                        break;
+                    case 'h':
+                        event.preventDefault();
+                        if (currentCategoryIndex === -1) {
+                            currentCategoryIndex = categories.length - 1;
+                            currentLinkIndex = 0;
+                        } else {
+                            const previousCategoryIndex = (currentCategoryIndex - 1 + categories.length) % categories.length;
+                            const previousLinks = categories[previousCategoryIndex].querySelectorAll('.links a');
+                            currentLinkIndex = Math.min(currentLinkIndex, previousLinks.length - 1);
+                            currentCategoryIndex = previousCategoryIndex;
+                        }
+                        updateHighlight();
+                        break;
+                    case 'l':
+                        event.preventDefault();
+                        if (currentCategoryIndex === -1) {
+                            currentCategoryIndex = 1;
+                            currentLinkIndex = 0;
+                        } else {
+                            const nextCategoryIndex = (currentCategoryIndex + 1) % categories.length;
+                            const nextLinks = categories[nextCategoryIndex].querySelectorAll('.links a');
+                            currentLinkIndex = Math.min(currentLinkIndex, nextLinks.length - 1);
+                            currentCategoryIndex = nextCategoryIndex;
+                        }
+                        updateHighlight();
+                        break;
+                    case 'Enter':
+                        event.preventDefault();
+                        if (currentCategoryIndex >= 0 && currentLinkIndex >= 0) {
+                            const currentLinks = categories[currentCategoryIndex].querySelectorAll('.links a');
+                            currentLinks[currentLinkIndex].click();
+                        }
+                        break;
+                }
+            });
+
+            updateHighlight();
+        });
+    </script>
 </body>
 
 </html>
