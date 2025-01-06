@@ -14,6 +14,9 @@ html, body {
   width: 100%;
   margin: 0;
   padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .container {
@@ -29,13 +32,23 @@ html, body {
 
 .left-container {
   grid-area: left;
-  aspect-ratio: 1/1;
-}
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}   
 
 .right-container {
   grid-area: right;
   height: 50%;
   width: 100%;
+}
+
+.gif {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
 }
 
 .gif img {
@@ -54,12 +67,15 @@ html, body {
 .category {
   display: flex;
   flex-direction: column;
+  align-items: center;
   width: 180px;
 }
 
 .bookmarks {
-  display: flex;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  width: 100%;
 }
 
 .links {
@@ -77,7 +93,11 @@ html, body {
 li {
   font-size: 16px;
   list-style-type: none;
-  padding: 5px
+  padding: 5px;
+}
+
+a {
+  white-space: nowrap; /* Prevents text from wrapping */
 }
 
 a:link {
@@ -109,5 +129,96 @@ a:hover {
 
   100% {
     opacity: 1;
+  }
+}
+
+@media (max-width: 1200px) {
+  .head {
+    font-size: 30px;
+    padding-top: 10px; /* Reduced padding-top */
+    margin: 0; /* Ensure no extra margin */
+  }
+
+  .container {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "left"
+      "right"
+      "bookmarks";
+    row-gap: 0; /* Removed row-gap */
+    padding: 0 20px; /* Added padding to create gap on left and right sides */
+    justify-items: center;
+    align-items: start; /* Align items to the start */
+  }
+
+  .left-container {
+    grid-area: left;
+    width: 100%;
+    margin: 0; /* Removed margin */
+    padding: 0; /* Removed padding */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start; /* Align items to the start */
+  }
+
+  .right-container {
+    grid-area: right;
+    width: 100%;
+    text-align: center;
+    margin: 0; /* Removed margin */
+    padding: 0; /* Removed padding */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start; /* Align items to the start */
+  }
+
+  .bookmarks {
+    grid-area: bookmarks;
+    grid-template-columns: repeat(2, 1fr); /* Adjusted to 2 columns */
+    gap: 10px; /* Reduced gap between columns */
+    justify-items: center;
+    width: 100%;
+  }
+
+  .gif {
+    display: flex;
+    padding: 0; /* Removed padding */
+    margin: 40px 0 10px 0; /* Added margin-top to create gap */
+    align-items: flex-start; /* Align items to the start */
+  }
+
+  .gif img {
+    max-width: 40%; /* Adjust the size of the GIF */
+    max-height: 40%; /* Adjust the size of the GIF */
+  }
+}
+
+@media (max-width: 768px) {
+  .head {
+    font-size: 30px;
+    padding-top: 30px;
+  }
+
+  .title {
+    font-size: 18px;
+  }
+
+  li {
+    font-size: 14px;
+  }
+
+  .bookmarks {
+    grid-template-columns: 1fr;
+    justify-items: center;
+  }
+
+  .gif {
+    display: none;
+  }
+
+  .links {
+    align-items: center;
   }
 }
