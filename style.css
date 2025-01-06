@@ -19,11 +19,6 @@ html, body {
   align-items: center;
 }
 
-
-.links a.highlight {
-    color: #FA7921  /* Change this to your preferred highlight color */
-}
-
 .container {
   display: grid;
   grid-template-columns: 1fr 460px 600px 1fr;
@@ -119,7 +114,7 @@ a:hover {
 }
 
 .links a.highlight {
-    color: #FA7921  /* Change this to your preferred highlight color */
+  color: var(--color-link-hover);  /* Change this to your preferred highlight color */
 }
 
 .blinking {
