@@ -17,7 +17,7 @@
 
         <div class="right-container">
             <div class="head">
-                <p>> cd ~/<span class="blinking" id="command">_</span></p>
+                <p class="command-line">> cd ~/ <span class="blinking" id="command">_</span><input type="text" id="commandInput" class="hidden" /></p>
             </div>
 
             <div class="bookmarks">
@@ -51,7 +51,6 @@
                     </div>
                 </div>
 
-
                 <div class="category" id="category4">
                     <div class="links">
                         <li class="title">Media</li>
@@ -71,7 +70,9 @@
             let currentLinkIndex = -1;
             const categories = document.querySelectorAll('.category');
             const commandElement = document.getElementById('command');
+            const commandInput = document.getElementById('commandInput');
             let commandText = '';
+            let inputMode = false;
 
             function updateHighlight() {
                 document.querySelectorAll('.links a').forEach(link => link.classList.remove('highlight'));
@@ -130,33 +131,14 @@
             }
 
             document.addEventListener('keydown', (event) => {
-                if (event.key.length === 1 && event.key.match(/[a-zA-Z0-9]/)) {
-                    if (commandElement.classList.contains('blinking')) {
-                        commandElement.classList.remove('blinking');
-                    }
-                    commandText += event.key;
-                    commandElement.textContent = commandText + '_';
-                } else {
+                if (!inputMode && event.key === 'i') {
+                    event.preventDefault();
+                    inputMode = true;
+                    commandElement.classList.add('hidden');
+                    commandInput.classList.remove('hidden');
+                    commandInput.focus();
+                } else if (!inputMode) {
                     switch (event.key) {
-                        case ' ':
-                            event.preventDefault();
-                            if (commandElement.classList.contains('blinking')) {
-                                commandElement.classList.remove('blinking');
-                            }
-                            commandText += ' ';
-                            commandElement.textContent = commandText + '_';
-                            break;
-                        case 'Backspace':
-                            event.preventDefault();
-                            commandText = commandText.slice(0, -1);
-                            commandElement.textContent = commandText + '_';
-                            break;
-                        case 'Enter':
-                            event.preventDefault();
-                            if (commandText) {
-                                openLinkByName(commandText);
-                            }
-                            break;
                         case 'j':
                             event.preventDefault();
                             if (currentCategoryIndex === -1) {
@@ -206,7 +188,35 @@
                             updateHighlight();
                             break;
                     }
+                } else {
+                    switch (event.key) {
+                        case 'Enter':
+                            event.preventDefault();
+                            if (commandInput.value) {
+                                openLinkByName(commandInput.value);
+                            }
+                            break;
+                        case 'Escape':
+                            event.preventDefault();
+                            inputMode = false;
+                            commandInput.classList.add('hidden');
+                            commandElement.classList.remove('hidden');
+                            commandInput.value = ''; // Clear the input box
+                            commandText = '';
+                            commandElement.textContent = commandText + '_';
+                            break;
+                    }
                 }
+            });
+
+            // Add blur event listener to clear the input box when it loses focus
+            commandInput.addEventListener('blur', () => {
+                commandInput.value = ''; // Clear the input box
+                inputMode = false;
+                commandInput.classList.add('hidden');
+                commandElement.classList.remove('hidden');
+                commandText = '';
+                commandElement.textContent = commandText + '_';
             });
 
             updateHighlight();
