@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', (event) => {
+document.addEventListener('DOMContentLoaded', () => {
 	let currentCategoryIndex = -1;
 	let currentLinkIndex = -1;
 	const categories = document.querySelectorAll('.category');
@@ -6,6 +6,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
 	const commandInput = document.getElementById('commandInput');
 	let commandText = '';
 	let inputMode = false;
+	let isMobile = window.innerWidth <= 768;
+	const mobileGreeting = window.innerWidth <= 600 ? true : false;
 
 	function updateHighlight() {
 		document.querySelectorAll('.links a').forEach(link => link.classList.remove('highlight'));
@@ -13,6 +15,20 @@ document.addEventListener('DOMContentLoaded', (event) => {
 			const currentLinks = categories[currentCategoryIndex].querySelectorAll('.links a');
 			currentLinkIndex = Math.min(currentLinkIndex, currentLinks.length - 1);
 			currentLinks[currentLinkIndex].classList.add('highlight');
+		}
+	}
+
+	// Update mobile greeting based on time of day
+	function updateMobileGreeting() {
+		if (mobileGreeting) {
+			const hour = new Date().getHours();
+			let greeting = "~/terminal";
+
+			if (hour < 12) greeting = "~/morning";
+			else if (hour < 18) greeting = "~/afternoon";
+			else greeting = "~/evening";
+
+			document.querySelector('.right-container').style.setProperty('--greeting', `"${greeting}"`);
 		}
 	}
 
@@ -56,11 +72,32 @@ document.addEventListener('DOMContentLoaded', (event) => {
 			}
 		}
 
-		if (closestLink && closestDistance <= 3) { // Allow up to 2 typos
+		if (closestLink && closestDistance <= 3) {
 			closestLink.click();
 		} else {
 			alert('No link found with the name: ' + name);
 		}
+	}
+
+	// Add touch events for mobile
+	if ('ontouchstart' in window) {
+		// Add subtle touch highlight to links
+		document.querySelectorAll('.links a').forEach(link => {
+			link.addEventListener('touchstart', function() {
+				document.querySelectorAll('.links a').forEach(l => l.classList.remove('highlight'));
+				this.classList.add('highlight');
+			});
+		});
+
+		// Add touch support for command input
+		document.querySelector('.command-line').addEventListener('touchstart', function() {
+			if (!inputMode) {
+				inputMode = true;
+				commandElement.classList.add('hidden');
+				commandInput.classList.remove('hidden');
+				commandInput.focus();
+			}
+		});
 	}
 
 	document.addEventListener('keydown', (event) => {
@@ -110,7 +147,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 				case 'l':
 					event.preventDefault();
 					if (currentCategoryIndex === -1) {
-						currentCategoryIndex = 1;
+						currentCategoryIndex = 0;
 						currentLinkIndex = 0;
 					} else {
 						const nextCategoryIndex = (currentCategoryIndex + 1) % categories.length;
@@ -138,26 +175,35 @@ document.addEventListener('DOMContentLoaded', (event) => {
 					break;
 				case 'Escape':
 					event.preventDefault();
-					inputMode = false;
-					commandInput.classList.add('hidden');
-					commandElement.classList.remove('hidden');
-					commandInput.value = ''; // Clear the input box
-					commandText = '';
-					commandElement.textContent = commandText + '_';
+					exitInputMode();
 					break;
 			}
 		}
 	});
 
-	// Add blur event listener to clear the input box when it loses focus
-	commandInput.addEventListener('blur', () => {
-		commandInput.value = ''; // Clear the input box
+	function exitInputMode() {
 		inputMode = false;
 		commandInput.classList.add('hidden');
 		commandElement.classList.remove('hidden');
+		commandInput.value = '';
 		commandText = '';
 		commandElement.textContent = commandText + '_';
+	}
+
+	// Add blur event listener to clear the input box when it loses focus
+	commandInput.addEventListener('blur', exitInputMode);
+
+	// Handle window resize to update mobile state
+	window.addEventListener('resize', () => {
+		isMobile = window.innerWidth <= 768;
 	});
 
+	// Update greeting on load
+	if (mobileGreeting) {
+		updateMobileGreeting();
+		setInterval(updateMobileGreeting, 60000); // Update every minute
+	}
+
+	// Initialize highlight
 	updateHighlight();
 });

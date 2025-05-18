@@ -1,17 +1,28 @@
 /* Root Variables */
 :root {
     --color-bg: #282828;
-    --color-fg: #EADBB2;
-    --color-link: #8F9191;
-    --color-link-visited: #668F8B;
-    --color-link-hover: #FA7921;
+    --color-fg: #EBDBB2;
+    --color-link: #98971A;
+    --color-link-visited: #689D6A;
+    --color-link-hover: #FB4934;
+    --color-title: #D79921;
+    --color-prompt: #B8BB26;
+    --border-color: #504945;
+    --shadow-color: rgba(20, 20, 20, 0.5);
+    --greeting: "~/terminal";
 }
 
 /* Global Styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
 html, body {
     background: var(--color-bg);
     color: var(--color-fg);
-    font-family: "CaskaydiaCove Nerd Font" ;/* Updated font-family */
+    font-family: "CaskaydiaCove Nerd Font", "Cascadia Code", monospace;
     height: 100%;
     width: 100%;
     margin: 0;
@@ -19,6 +30,7 @@ html, body {
     display: flex;
     justify-content: center;
     align-items: center;
+    overflow-x: hidden;
 }
 
 .hidden {
@@ -30,75 +42,75 @@ html, body {
     background: var(--color-bg);
     color: var(--color-fg);
     border: none;
-    font-family: "CaskaydiaCove Nerd Font" ;/* Updated font-family */
+    font-family: inherit;
     font-size: 35px;
     outline: none;
-    caret-color: transparent; /* Hide the default blinking cursor */
-    width: 10ch; /* Set a fixed width to maintain space */
+    caret-color: transparent;
+    width: 10ch;
 }
 
 /* Command Line */
+.head {
+    margin-bottom: 2rem;
+    padding-top: 1rem;
+}
+
+.prompt {
+    color: var(--color-prompt);
+}
+
 .head .command-line {
     display: flex;
-    justify-content: center; /* Center horizontally */
-    align-items: center; /* Center vertically */
-    padding-left: 200px;
+    justify-content: flex-start;
+    align-items: center;
+    font-size: 2rem;
+    padding: 1rem;
+    background-color: rgba(40, 40, 40, 0.8);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 8px var(--shadow-color);
+    width: auto;
 }
 
 .head .command-line .input-container {
     display: inline-block;
-    width: 10ch; /* Set a fixed width to match the input field */
+    width: 10ch;
     position: relative;
+    margin-left: 0.5rem;
 }
 
 .head .command-line .blinking {
     position: absolute;
     left: 0;
-    top: 0;
+    top: 50%;
+    transform: translateY(-50%);
     width: 100%;
     text-align: left;
-}
-
-.head .command-line input {
-    display: inline-block;
-    width: 100%;
-    border: none;
-    background: transparent;
-    color: var(--color-fg);
-    font-family: "CaskaydiaCove Nerd Font" ;/* Updated font-family */
-    font-size: 35px;
-    outline: none;
-    caret-color: transparent; /* Hide the default blinking cursor */
+    margin-top: -2px;
 }
 
 /* Container */
 .container {
     display: grid;
-    grid-template-columns: 1fr 460px 600px 1fr;
-    grid-template-areas: ". left right .";
-    column-gap: 80px;
-    justify-items: center;
-    align-items: center;
-    min-height: 100%;
+    grid-template-columns: minmax(150px, 1fr) minmax(300px, 2fr);
+    gap: 2rem;
+    max-width: 1200px;
+    width: 90%;
+    padding: 1rem;
 }
 
 /* Left Container */
 .left-container {
-    grid-area: left;
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 1rem;
 }
 
 /* Right Container */
 .right-container {
-    grid-area: right;
-    height: 50%;
-    width: 100%;
     display: flex;
     flex-direction: column;
-    align-items: center; /* Center children horizontally */
-    justify-content: center; /* Center children vertically */
+    width: 100%;
 }
 
 /* GIF */
@@ -108,60 +120,69 @@ html, body {
     align-items: center;
     width: 100%;
     height: 100%;
+    overflow: hidden;
+    box-shadow: 0 6px 12px var(--shadow-color);
+    border: 1px solid var(--border-color);
 }
 
 .gif img {
     max-width: 100%;
-    max-height: 100%;
-}
-
-/* Head */
-.head {
-    display: flex;
-    align-items: center;
-    font-size: 40px;
-    padding-top: 60px;
-    justify-content: center; /* Center content horizontally */
-    width: 100%; /* Ensure it takes full width of the container */
-}
-
-/* Category */
-.category {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 180px;
+    height: auto;
+    display: block;
 }
 
 /* Bookmarks */
 .bookmarks {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1.5rem;
     width: 100%;
+}
+
+/* Category */
+.category {
+    background-color: rgba(40, 40, 40, 0.8);
+    border: 1px solid var(--border-color);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 4px 6px var(--shadow-color);
+}
+
+.category:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px var(--shadow-color);
 }
 
 /* Links */
 .links {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding-top: 20px;
-    padding-bottom: 20px;
+    padding: 1.2rem 0.8rem;
 }
 
 .title {
-    font-size: 20px;
+    color: var(--color-title);
+    font-size: 1.2rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.5rem;
+    margin-bottom: 0.8rem;
+    text-align: center;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
 }
 
 li {
-    font-size: 16px;
-    list-style-type: none;
-    padding: 5px;
+    font-size: 1rem;
+    padding: 0.4rem 0;
+    text-align: center;
 }
 
 a {
-    white-space: nowrap; /* Prevents text from wrapping */
+    white-space: normal;
+    display: block;
+    padding: 0.3rem 0.5rem;
+    transition: all 0.2s ease;
+    word-break: break-word;
 }
 
 a:link {
@@ -175,10 +196,14 @@ a:visited {
 
 a:hover {
     color: var(--color-link-hover);
+    background-color: rgba(60, 56, 54, 0.4);
+    transform: translateX(3px);
 }
 
 .links a.highlight {
-    color: var(--color-link-hover);  /* Change this to your preferred highlight color */
+    color: var(--color-link-hover);
+    background-color: rgba(60, 56, 54, 0.6);
+    transform: translateX(3px);
 }
 
 /* Blinking Cursor */
@@ -188,117 +213,152 @@ a:hover {
 }
 
 @keyframes opacity {
-    0% {
-        opacity: 1;
-    }
-    50% {
-        opacity: 0;
-    }
-    100% {
-        opacity: 1;
-    }
+    0% { opacity: 1; }
+    50% { opacity: 0; }
+    100% { opacity: 1; }
 }
 
 /* Media Queries */
-@media (max-width: 1200px) {
-    .head {
-        font-size: 30px;
-        padding-top: 10px; /* Reduced padding-top */
-        margin: 0; /* Ensure no extra margin */
-    }
-
-    #commandInput {
-        font-size: 30px;
-    }
-
-    .head .command-line {
-        padding-left: 50px;
-    }
-
+@media (max-width: 900px) {
     .container {
         grid-template-columns: 1fr;
         grid-template-areas: 
             "left"
-            "right"
-            "bookmarks";
-        row-gap: 0; /* Removed row-gap */
-        padding: 0 20px; /* Added padding to create gap on left and right sides */
-        justify-items: center;
-        align-items: start; /* Align items to the start */
+            "right";
+        padding: 1.5rem;
     }
 
     .left-container {
         grid-area: left;
-        width: 100%;
-        margin: 0; /* Removed margin */
-        padding: 0; /* Removed padding */
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: flex-start; /* Align items to the start */
+        max-width: 250px;
+        margin: 0 auto 1.5rem;
     }
 
     .right-container {
         grid-area: right;
-        width: 100%;
-        text-align: center;
-        margin: 0; /* Removed margin */
-        padding: 0; /* Removed padding */
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: flex-start; /* Align items to the start */
     }
 
-    .bookmarks {
-        grid-area: bookmarks;
-        grid-template-columns: repeat(2, 1fr); /* Adjusted to 2 columns */
-        gap: 10px; /* Reduced gap between columns */
-        justify-items: center;
-        width: 100%;
+    .head .command-line {
+        font-size: 1.6rem;
+        justify-content: center;
+        background-color: rgba(40, 40, 40, 0.95);
+        padding: 0.8rem 1rem;
     }
-
-    .gif {
-        display: flex;
-        padding: 0; /* Removed padding */
-        margin: 40px 0 10px 0; /* Added margin-top to create gap */
-        align-items: flex-start; /* Align items to the start */
-    }
-
-    .gif img {
-        max-width: 40%; /* Adjust the size of the GIF */
-        max-height: 40%; /* Adjust the size of the GIF */
+    
+    #commandInput {
+        font-size: 1.6rem;
     }
 }
 
-@media (max-width: 768px) {
-    .head {
-        font-size: 30px;
-        padding-top: 30px;
-    }
-
-    #commandInput {
-        font-size: 30px;
-    }
-
-    .title {
-        font-size: 18px;
-    }
-
-    li {
-        font-size: 14px;
-    }
-
+@media (max-width: 600px) {
     .bookmarks {
-        grid-template-columns: 1fr;
-        justify-items: center;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        padding: 0.5rem;
+        width: 100%;
     }
 
-    .gif {
+    .category {
+        box-shadow: 0 3px 8px var(--shadow-color);
+        border-width: 2px;
+    }
+    
+    /* Hide GIF on mobile screens */
+    .left-container {
         display: none;
     }
-
+    
+    /* Hide command line on smaller screens */
+    .head {
+        margin-bottom: 1rem;
+    }
+    
+    .head .command-line {
+        display: none;
+    }
+    
+    .title {
+        font-size: 1.1rem;
+        background-color: rgba(60, 56, 54, 0.5);
+        padding: 0.6rem 0.5rem;
+        margin-bottom: 0.6rem;
+    }
+    
+    li {
+        font-size: 0.95rem;
+        padding: 0.3rem 0;
+    }
+    
     .links {
-        align-items: center;
+        padding: 0;
+    }
+    
+    /* Fix for making links equal height on mobile only */
+    @supports (display: flex) {
+        a {
+            padding: 0.5rem;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 2.5rem;
+        }
+        
+        #dev .links a {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    }
+    
+    a:active {
+        background-color: rgba(146, 131, 116, 0.15);
+    }
+
+    .right-container::before {
+        content: none;
+    }
+}
+
+@media (max-width: 400px) {
+    .bookmarks {
+        grid-template-columns: 1fr;
+        max-width: 100%;
+        margin: 0 auto;
+    }
+    
+    .category {
+        margin-bottom: 1rem;
+        overflow: hidden;
+        transition: transform 0.2s ease;
+    }
+    
+    .category:active {
+        transform: scale(0.98);
+    }
+    
+    .title {
+        padding: 0.8rem 0.5rem;
+        font-size: 1.2rem;
+        margin-bottom: 0;
+        border-bottom: 2px solid var(--border-color);
+    }
+    
+    .links ul {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        padding: 0.5rem;
+    }
+    
+    li {
+        padding: 0.4rem 0.2rem;
+        height: 100%;
+    }
+    
+    a {
+        background-color: rgba(60, 56, 54, 0.3);
+        text-align: center;
+        height: 100%;
     }
 }
