@@ -24,6 +24,11 @@
                         <input type="text" id="commandInput" class="hidden" aria-label="Command input" />
                     </span>
                 </p>
+                <div class="command-history" id="commandHistory"></div>
+            </div>
+
+            <div class="system-stats">
+                <pre id="stats-display">fetching data...</pre>
             </div>
 
             <nav class="bookmarks">
@@ -74,6 +79,34 @@
                     </div>
                 </div>
             </nav>
+        </div>
+    </div>
+
+    <button id="darkModeToggle" class="theme-toggle" aria-label="Toggle ultra dark mode">◐</button>
+    <button id="helpButton" class="help-toggle" aria-label="Show help">?</button>
+
+    <div class="help-overlay" id="helpOverlay">
+        <div class="help-content">
+            <h2>Terminal Commands</h2>
+            <table>
+                <tr><td><kbd>i</kbd></td><td>Enter command mode</td></tr>
+                <tr><td><kbd>Esc</kbd></td><td>Exit command mode</td></tr>
+                <tr><td><kbd>h</kbd>, <kbd>j</kbd>, <kbd>k</kbd>, <kbd>l</kbd></td><td>Navigate bookmarks (vim style)</td></tr>
+                <tr><td><kbd>Enter</kbd></td><td>Open selected bookmark</td></tr>
+                <tr><td><kbd>?</kbd></td><td>Toggle this help</td></tr>
+                <tr><td><kbd>s</kbd></td><td>Toggle system stats</td></tr>
+            </table>
+            
+            <h2>Search Commands</h2>
+            <table>
+                <tr><td><code>!g query</code></td><td>Google search</td></tr>
+                <tr><td><code>!y query</code></td><td>YouTube search</td></tr>
+                <tr><td><code>!w query</code></td><td>Wikipedia search</td></tr>
+                <tr><td><code>example.com</code></td><td>Direct URL navigation</td></tr>
+                <tr><td><code>bookmark name</code></td><td>Open matching bookmark</td></tr>
+            </table>
+            
+            <button id="closeHelp">Close</button>
         </div>
     </div>
 

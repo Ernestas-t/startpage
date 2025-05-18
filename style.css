@@ -51,7 +51,7 @@ html, body {
 
 /* Command Line */
 .head {
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
     padding-top: 1rem;
 }
 
@@ -88,6 +88,74 @@ html, body {
     margin-top: -2px;
 }
 
+/* Command History */
+.command-history {
+    font-size: 0.9rem;
+    color: var(--color-fg);
+    margin-top: 0.5rem;
+    opacity: 0.7;
+    max-height: 100px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-color) transparent;
+}
+
+.command-history .history-item {
+    margin-bottom: 0.2rem;
+}
+
+.command-history .history-command {
+    color: var(--color-prompt);
+}
+
+.command-history .history-result {
+    color: var(--color-link-visited);
+    padding-left: 1rem;
+}
+
+/* System Stats */
+.system-stats {
+    margin-bottom: 1.5rem;
+    font-size: 0.85rem;
+    color: var(--color-fg);
+    max-width: 100%;
+    overflow: hidden;
+    display: none; /* Hide by default, toggle with key */
+}
+
+.system-stats pre {
+    font-family: inherit;
+    padding: 0.5rem;
+    border-left: 2px solid var(--color-title);
+    background-color: rgba(40, 40, 40, 0.6);
+    overflow-x: auto;
+    white-space: pre;
+}
+
+/* Quick Actions */
+.quick-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.quick-actions button {
+    background-color: rgba(40, 40, 40, 0.8);
+    color: var(--color-fg);
+    border: 1px solid var(--border-color);
+    padding: 0.4rem 0.8rem;
+    font-family: inherit;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.quick-actions button:hover {
+    background-color: rgba(60, 56, 54, 0.8);
+    color: var(--color-link-hover);
+}
+
 /* Container */
 .container {
     display: grid;
@@ -121,8 +189,6 @@ html, body {
     width: 100%;
     height: 100%;
     overflow: hidden;
-    box-shadow: 0 6px 12px var(--shadow-color);
-    border: 1px solid var(--border-color);
 }
 
 .gif img {
@@ -218,6 +284,118 @@ a:hover {
     100% { opacity: 1; }
 }
 
+/* Dark Mode Toggle */
+.theme-toggle {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    background-color: rgba(40, 40, 40, 0.6);
+    color: var(--color-fg);
+    border: 1px solid var(--border-color);
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 100;
+    transition: all 0.3s ease;
+}
+
+.theme-toggle:hover {
+    background-color: rgba(60, 56, 54, 0.8);
+    transform: rotate(30deg);
+}
+
+/* Ultra Dark Mode Classes */
+.ultra-dark {
+    --color-bg: #1d2021; /* Even darker background */
+}
+
+.ultra-dark .category {
+    background-color: rgba(30, 30, 30, 0.9);
+}
+
+.ultra-dark .gif {
+    opacity: 0.8;
+}
+
+/* Help Overlay */
+.help-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(29, 32, 33, 0.9);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.help-content {
+    background-color: var(--color-bg);
+    border: 1px solid var(--border-color);
+    padding: 2rem;
+    max-width: 600px;
+    width: 90%;
+    max-height: 80%;
+    overflow-y: auto;
+}
+
+.help-content h2 {
+    color: var(--color-title);
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.5rem;
+}
+
+.help-content table {
+    width: 100%;
+    margin-bottom: 1.5rem;
+    border-collapse: collapse;
+}
+
+.help-content td {
+    padding: 0.5rem;
+    border-bottom: 1px solid rgba(80, 73, 69, 0.2);
+}
+
+.help-content td:first-child {
+    width: 30%;
+    font-weight: bold;
+    color: var(--color-link);
+}
+
+.help-content kbd {
+    background-color: rgba(60, 56, 54, 0.8);
+    padding: 0.1rem 0.4rem;
+    font-family: inherit;
+}
+
+.help-content code {
+    color: var(--color-prompt);
+    font-family: inherit;
+}
+
+.help-content button {
+    background-color: var(--color-bg);
+    color: var(--color-link);
+    border: 1px solid var(--border-color);
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    font-family: inherit;
+    margin-top: 1rem;
+    transition: all 0.2s ease;
+}
+
+.help-content button:hover {
+    background-color: rgba(60, 56, 54, 0.8);
+    color: var(--color-link-hover);
+}
+
 /* Media Queries */
 @media (max-width: 900px) {
     .container {
@@ -275,6 +453,14 @@ a:hover {
     
     .head .command-line {
         display: none;
+    }
+    
+    .system-stats {
+        display: none !important; /* Always hide on mobile */
+    }
+    
+    .quick-actions {
+        justify-content: center;
     }
     
     .title {
@@ -360,5 +546,17 @@ a:hover {
         background-color: rgba(60, 56, 54, 0.3);
         text-align: center;
         height: 100%;
+    }
+    
+    .help-content {
+        padding: 1rem;
+    }
+    
+    .theme-toggle {
+        bottom: 0.5rem;
+        right: 0.5rem;
+        width: 2rem;
+        height: 2rem;
+        font-size: 1rem;
     }
 }

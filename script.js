@@ -4,10 +4,12 @@ document.addEventListener('DOMContentLoaded', () => {
 	const categories = document.querySelectorAll('.category');
 	const commandElement = document.getElementById('command');
 	const commandInput = document.getElementById('commandInput');
+	const statsDisplay = document.getElementById('stats-display');
 	let commandText = '';
 	let inputMode = false;
 	let isMobile = window.innerWidth <= 768;
 	const mobileGreeting = window.innerWidth <= 600 ? true : false;
+	let statsInterval;
 
 	function updateHighlight() {
 		document.querySelectorAll('.links a').forEach(link => link.classList.remove('highlight'));
@@ -29,6 +31,50 @@ document.addEventListener('DOMContentLoaded', () => {
 			else greeting = "~/evening";
 
 			document.querySelector('.right-container').style.setProperty('--greeting', `"${greeting}"`);
+		}
+	}
+
+	function updateSystemStats() {
+		if (!statsDisplay) return;
+
+		const now = new Date();
+		const timeStr = now.toLocaleTimeString();
+		const dateStr = now.toLocaleDateString();
+
+		// You can replace this with an actual API call for weather
+		const weatherData = "Weather: 22°C - Clear";
+
+		statsDisplay.textContent = `┌─ System Info ────────────────────┐
+│ ${dateStr} | ${timeStr}         │
+│ ${weatherData}              │
+└──────────────────────────────────┘`;
+	}
+
+	function addToCommandHistory(command, result = null) {
+		const historyElement = document.getElementById('commandHistory');
+		if (!historyElement) return;
+
+		const historyItem = document.createElement('div');
+		historyItem.className = 'history-item';
+
+		const commandSpan = document.createElement('div');
+		commandSpan.className = 'history-command';
+		commandSpan.textContent = `> ${command}`;
+		historyItem.appendChild(commandSpan);
+
+		if (result) {
+			const resultSpan = document.createElement('div');
+			resultSpan.className = 'history-result';
+			resultSpan.textContent = result;
+			historyItem.appendChild(resultSpan);
+		}
+
+		historyElement.appendChild(historyItem);
+		historyElement.scrollTop = historyElement.scrollHeight;
+
+		// Keep history limited to last 5 commands
+		while (historyElement.children.length > 5) {
+			historyElement.removeChild(historyElement.firstChild);
 		}
 	}
 
@@ -73,9 +119,42 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 
 		if (closestLink && closestDistance <= 3) {
+			addToCommandHistory(name, `Opening ${closestLink.textContent}...`);
 			closestLink.click();
 		} else {
+			addToCommandHistory(name, `Error: No link found with name "${name}"`);
 			alert('No link found with the name: ' + name);
+		}
+	}
+
+	function handleSearch(query) {
+		if (query.startsWith('!g ')) {
+			// Google search
+			const searchTerm = query.substring(3);
+			addToCommandHistory(`!g ${searchTerm}`, `Searching Google for "${searchTerm}"`);
+			window.location.href = `https://www.google.com/search?q=${encodeURIComponent(searchTerm)}`;
+		} else if (query.startsWith('!y ')) {
+			// YouTube search
+			const searchTerm = query.substring(3);
+			addToCommandHistory(`!y ${searchTerm}`, `Searching YouTube for "${searchTerm}"`);
+			window.location.href = `https://www.youtube.com/results?search_query=${encodeURIComponent(searchTerm)}`;
+		} else if (query.startsWith('!w ')) {
+			// Wikipedia search
+			const searchTerm = query.substring(3);
+			addToCommandHistory(`!w ${searchTerm}`, `Searching Wikipedia for "${searchTerm}"`);
+			window.location.href = `https://en.wikipedia.org/wiki/Special:Search?search=${encodeURIComponent(searchTerm)}`;
+		} else {
+			// Try to open bookmark or treat as direct URL
+			if (query.includes('.') && !query.includes(' ')) {
+				let url = query;
+				if (!url.startsWith('http://') && !url.startsWith('https://')) {
+					url = 'https://' + url;
+				}
+				addToCommandHistory(query, `Navigating to ${url}`);
+				window.location.href = url;
+			} else {
+				openLinkByName(query);
+			}
 		}
 	}
 
@@ -90,14 +169,16 @@ document.addEventListener('DOMContentLoaded', () => {
 		});
 
 		// Add touch support for command input
-		document.querySelector('.command-line').addEventListener('touchstart', function() {
-			if (!inputMode) {
-				inputMode = true;
-				commandElement.classList.add('hidden');
-				commandInput.classList.remove('hidden');
-				commandInput.focus();
-			}
-		});
+		if (document.querySelector('.command-line')) {
+			document.querySelector('.command-line').addEventListener('touchstart', function() {
+				if (!inputMode) {
+					inputMode = true;
+					commandElement.classList.add('hidden');
+					commandInput.classList.remove('hidden');
+					commandInput.focus();
+				}
+			});
+		}
 	}
 
 	document.addEventListener('keydown', (event) => {
@@ -107,6 +188,22 @@ document.addEventListener('DOMContentLoaded', () => {
 			commandElement.classList.add('hidden');
 			commandInput.classList.remove('hidden');
 			commandInput.focus();
+		} else if (!inputMode && event.key === 's') {
+			event.preventDefault();
+			const statsElement = document.querySelector('.system-stats');
+			statsElement.style.display = statsElement.style.display === 'block' ? 'none' : 'block';
+
+			if (statsElement.style.display === 'block') {
+				updateSystemStats();
+				// Update every minute when visible
+				statsInterval = setInterval(updateSystemStats, 60000);
+			} else {
+				clearInterval(statsInterval);
+			}
+		} else if (!inputMode && event.key === '?') {
+			event.preventDefault();
+			document.getElementById('helpOverlay').style.display =
+				document.getElementById('helpOverlay').style.display === 'flex' ? 'none' : 'flex';
 		} else if (!inputMode) {
 			switch (event.key) {
 				case 'j':
@@ -170,7 +267,9 @@ document.addEventListener('DOMContentLoaded', () => {
 				case 'Enter':
 					event.preventDefault();
 					if (commandInput.value) {
-						openLinkByName(commandInput.value);
+						const query = commandInput.value;
+						handleSearch(query);
+						exitInputMode();
 					}
 					break;
 				case 'Escape':
@@ -204,6 +303,35 @@ document.addEventListener('DOMContentLoaded', () => {
 		setInterval(updateMobileGreeting, 60000); // Update every minute
 	}
 
+	// Dark mode toggle
+	document.getElementById('darkModeToggle').addEventListener('click', () => {
+		document.body.classList.toggle('ultra-dark');
+		// Save preference to localStorage
+		localStorage.setItem('ultraDarkMode', document.body.classList.contains('ultra-dark'));
+	});
+
+	// Check for saved preference on load
+	if (localStorage.getItem('ultraDarkMode') === 'true') {
+		document.body.classList.add('ultra-dark');
+	}
+
+	// Help button
+	document.getElementById('helpButton').addEventListener('click', () => {
+		document.getElementById('helpOverlay').style.display = 'flex';
+	});
+
+	// Close help when close button is clicked
+	document.getElementById('closeHelp').addEventListener('click', () => {
+		document.getElementById('helpOverlay').style.display = 'none';
+	});
+
+	// Close help when clicking outside the help content
+	document.getElementById('helpOverlay').addEventListener('click', (event) => {
+		if (event.target === document.getElementById('helpOverlay')) {
+			document.getElementById('helpOverlay').style.display = 'none';
+		}
+	});
+
 	// Initialize highlight
-	updateHighlight();
+	updateHigh
 });
